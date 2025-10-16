@@ -59,7 +59,7 @@ pipeline {
                 source ${VENV_DIR}/bin/activate
         
         
-                gunicorn --bind ${HOST}:${PORT} ${APP_MODULE} \
+                setsid gunicorn --bind ${HOST}:${PORT} ${APP_MODULE} \
                     --pid gunicorn.pid \
                     > gunicorn.log 2>&1 &
         

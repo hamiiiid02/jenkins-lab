@@ -19,7 +19,7 @@ class TestApp(unittest.TestCase):
 
     def test_hello_without_name(self):
         response = self.client.post('/hello', data={'username': ''})
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
         self.assertIn(b'Hello there', response.data)
 
     def test_sum_valid(self):

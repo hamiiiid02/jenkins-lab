@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CI/CD Demo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #2c3e50; }
+        form { margin-bottom: 20px; }
+        input[type=text], input[type=number] {
+            padding: 6px; margin-right: 8px; border-radius: 5px; border: 1px solid #ccc;
+        }
+        button {
+            background-color: #3498db; color: white;
+            border: none; padding: 6px 12px; border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #2980b9; }
+        .result {
+            background-color: #f4f4f4; padding: 10px;
+            border-left: 4px solid #3498db; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flask CI/CD Demo using Jenkins 🚀</h1>
+
+    <h3>👋 Personalized Welcome</h3>
+    <form method="POST" action="/hello">
+        <input type="text" name="username" placeholder="Enter your name" >
+        <button type="submit">Say Hello</button>
+    </form>
+
+    {% if message %}
+        <div class="result">{{ message }}</div>
+    {% endif %}
+
+    <hr>
+
+    <h3>➕ Simple Calculator</h3>
+    <form method="POST" action="/sum">
+        <input type="number" step="any" name="a" placeholder="Enter a number" required>
+        <input type="number" step="any" name="b" placeholder="Enter another number" required>
+        <button type="submit">Calculate Sum</button>
+    </form>
+
+    {% if sum_result is not none %}
+        <div class="result">Result: {{ sum_result }}</div>
+    {% endif %}
+</body>
+</html>

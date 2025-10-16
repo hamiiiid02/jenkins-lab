@@ -4,6 +4,9 @@ pipeline {
     environment {
         GITHUB_TOKEN = credentials('github-token')
         VENV_DIR = ".venv"
+        HOST = "127.0.0.1"
+        PORT = "5000"
+        APP_MODULE = "app:app"  
     }
 
     stages {
@@ -45,6 +48,24 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'echo "Build step placeholder (Flask apps usually don\'t need build)"'
+            }
+        }
+
+        stage('Deploy (Local with Gunicorn)') {
+            steps {
+                echo 'Starting Flask app locally using Gunicorn...'
+                sh """
+                . ${VENV_DIR}/bin/activate
+
+            
+
+                # Start Gunicorn in background
+                nohup gunicorn --bind ${HOST}:${PORT} ${APP_MODULE} \
+                    --pid gunicorn.pid \
+                    > gunicorn.log 2>&1 &
+
+                echo "✅ Gunicorn started on http://${HOST}:${PORT}"
+                """
             }
         }
     }

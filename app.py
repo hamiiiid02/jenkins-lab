@@ -12,7 +12,7 @@ def hello():
     if name:
         return render_template("index.html", message=f"Hello {name}, welcome to Jenkins CI/CD demo!", sum_result=None)
     else:
-        return render_template("index.html", message="Hello there", sum_result=None), 404
+        return render_template("index.html", message="Hello there", sum_result=None)
 
 @app.route('/sum', methods=['POST'])
 def calculate_sum():

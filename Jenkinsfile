@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         GITHUB_TOKEN = credentials('github-token')
         VENV_DIR = ".venv"

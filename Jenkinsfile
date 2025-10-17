@@ -37,11 +37,24 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                sh """
-                . ${VENV_DIR}/bin/activate
-                python -m pytest test_app.py -v
-                """
+            parallel {
+                stage('Test App 1') {
+                    steps {
+                        sh """
+                        . ${VENV_DIR}/bin/activate
+                        python -m pytest test_app.py -v
+                        """
+                    }
+                }
+        
+                stage('Test App 2') {
+                    steps {
+                        sh """
+                        . ${VENV_DIR}/bin/activate
+                        python -m pytest test_app_2.py -v
+                        """
+                    }
+                }
             }
         }
 

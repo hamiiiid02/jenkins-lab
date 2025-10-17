@@ -76,7 +76,6 @@ pipeline {
         
         
                 setsid gunicorn --bind ${HOST}:${PORT} ${APP_MODULE} \
-                    --pid gunicorn.pid \
                     > gunicorn.log 2>&1 &
         
                 echo "✅ Gunicorn started on http://${HOST}:${PORT}"
@@ -93,7 +92,7 @@ pipeline {
                 body: """
                 <html>
                     <body>
-                        <h1>Jenkins Build Notification: Attendance APP</h1>
+                        <h1>Jenkins Build Notification: Flask App</h1>
                         <h2>Build Successful 🎉</h2>
                         <p>Job: <b>${env.JOB_NAME}</b></p>
                         <p>Build Number: <b>${env.BUILD_NUMBER}</b></p>
@@ -113,7 +112,7 @@ pipeline {
                 body: """
                 <html>
                     <body>
-                        <h1>Jenkins Build Notification: Attendance APP</h1>
+                        <h1>Jenkins Build Notification: Flask App</h1>
                         <h2>Build Failed ❌</h2>
                         <p>Job: <b>${env.JOB_NAME}</b></p>
                         <p>Build Number: <b>${env.BUILD_NUMBER}</b></p>
@@ -127,29 +126,6 @@ pipeline {
                 """,
                 mimeType: 'text/html'
             )
-        }
-
-        unstable {
-            emailext(
-                to: "${env.RECIPIENTS}",
-                subject: "⚠️ UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                <html>
-                    <body>
-                        <h1>Jenkins Build Notification: Attendance APP</h1>
-                        <h2>Build Unstable ⚠️</h2>
-                        <p>Tests failed or warnings were found.</p>
-                        <p>Job: <b>${env.JOB_NAME}</b></p>
-                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                    </body>
-                </html>
-                """,
-                mimeType: 'text/html'
-            )
-        }
-
-        always {
-            echo "Post-build email step executed."
         }
     }
 

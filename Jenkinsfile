@@ -96,7 +96,7 @@ pipeline {
                     <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> succeeded successfully.</p>
                     <p>View build details here:</p>
                     <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """
+                """,
                 mimeType: 'text/html'
             )
         }
@@ -113,7 +113,7 @@ pipeline {
                     <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> has failed.</p>
                     <p>Check the build logs here:</p>
                     <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """
+                """,
                 mimeType: 'text/html'
             )
         

@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = credentials('github2-token')
         VENV_DIR = ".venv"
         HOST = "0.0.0.0"
         PORT = "5000"
@@ -14,7 +14,7 @@ pipeline {
             steps {
                 git branch: 'main',
                     url: 'https://github.com/hamiiiid02/jenkins-lab.git',
-                    credentialsId: 'github-token'
+                    credentialsId: 'github2-token'
             }
         }
 
@@ -37,31 +37,29 @@ pipeline {
         }
 
         stage('Run Tests') {
-            when {
-                not {
-                    changeset "**/README.md"
-                }
-            }
-            parallel {
-                stage('Test App 1') {
-                    steps {
-                        sh """
-                        . ${VENV_DIR}/bin/activate
-                        python -m pytest test_app.py -v
-                        """
-                    }
-                }
-        
-                stage('Test App 2') {
-                    steps {
-                        sh """
-                        . ${VENV_DIR}/bin/activate
-                        python -m pytest test_app_2.py -v
-                        """
-                    }
-                }
+            
+            steps {
+                sh """
+                . ${VENV_DIR}/bin/activate
+                mkdir -p reports
+                python -m pytest test_app.py -v --html=reports/pytest-report.html --self-contained-html
+                """
             }
         }
+        
+        stage('Publish Test Report') {
+            steps {
+                publishHTML(target: [
+                    reportDir: 'reports',
+                    reportFiles: 'pytest-report.html',
+                    reportName: 'Pytest Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: false
+                ])
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh 'echo "Build step placeholder (Flask apps do not need build)"'
@@ -93,11 +91,13 @@ pipeline {
                 from: "amineallali9@gmail.com",
                 replyTo: "amineallali9@gmail.com",
                 subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """\
-    <p>Good news!</p>
-    <p>Build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> succeeded.</p>
-    <p>Check details: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-    """
+                body: """
+                    <p>🎉 <b>Good news!</b></p>
+                    <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> succeeded successfully.</p>
+                    <p>View build details here:</p>
+                    <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """
+                mimeType: 'text/html'
             )
         }
     
@@ -106,14 +106,19 @@ pipeline {
                 to: "hamdonhamid67@gmail.com",
                 from: "amineallali9@gmail.com",
                 replyTo: "amineallali9@gmail.com",
+                
                 subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """\
-    <p>Uh oh...</p>
-    <p>Build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> failed.</p>
-    <p>Check logs: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-    """
+                body: """
+                    <p>⚠️ <b>Build Failed</b></p>
+                    <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> has failed.</p>
+                    <p>Check the build logs here:</p>
+                    <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """
+                mimeType: 'text/html'
             )
+        
         }
     }
+
 
 }

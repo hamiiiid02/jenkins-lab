@@ -67,6 +67,13 @@ pipeline {
                 """
             }
         }
+    
+        stage('Test SMTP Connection') {
+            steps {
+                sh 'echo "Testing SMTP..."'
+                sh 'nc -vz smtp.gmail.com 465 || echo "Cannot connect!"'
+            }
+        }
     }
 
     post {

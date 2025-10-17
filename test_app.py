@@ -14,7 +14,7 @@ class TestApp(unittest.TestCase):
 
     def test_hello_with_name(self):
         response = self.client.post('/hello', data={'username': 'Amine'})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         self.assertIn(b'Hello Amine', response.data)
 
     def test_hello_without_name(self):

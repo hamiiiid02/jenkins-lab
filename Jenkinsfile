@@ -37,6 +37,11 @@ pipeline {
         }
 
         stage('Run Tests') {
+            when {
+                not {
+                    changeset "**/README.md"
+                }
+            }
             parallel {
                 stage('Test App 1') {
                     steps {
@@ -57,7 +62,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build') {
             steps {
                 sh 'echo "Build step placeholder (Flask apps do not need build)"'

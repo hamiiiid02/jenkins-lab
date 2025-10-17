@@ -47,7 +47,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'echo "Build step placeholder (Flask apps usually don\'t need build)"'
+                sh 'echo "Build step placeholder (Flask apps do not need build)"'
             }
         }
 
@@ -65,13 +65,6 @@ pipeline {
         
                 echo "✅ Gunicorn started on http://${HOST}:${PORT}"
                 """
-            }
-        }
-    
-        stage('Test SMTP Connection') {
-            steps {
-                sh 'echo "Testing SMTP..."'
-                sh 'nc -vz smtp.gmail.com 465 || echo "Cannot connect!"'
             }
         }
     }

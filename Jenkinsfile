@@ -7,6 +7,7 @@ pipeline {
         HOST = "0.0.0.0"
         PORT = "5000"
         APP_MODULE = "app:app"  
+        RECIPIENTS = "allali.mohamedamin@etu.uae.ac.ma, hamdonhamid67@gmail.com"
     }
 
     stages {
@@ -87,36 +88,68 @@ pipeline {
     post {
         success {
             emailext(
-                to: "hamdonhamid67@gmail.com",
-                from: "amineallali9@gmail.com",
-                replyTo: "amineallali9@gmail.com",
+                to: "${env.RECIPIENTS}",
                 subject: "✅ SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
-                    <p>🎉 <b>Good news!</b></p>
-                    <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> succeeded successfully.</p>
-                    <p>View build details here:</p>
-                    <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                <html>
+                    <body>
+                        <h1>Jenkins Build Notification: Attendance APP</h1>
+                        <h2>Build Successful 🎉</h2>
+                        <p>Job: <b>${env.JOB_NAME}</b></p>
+                        <p>Build Number: <b>${env.BUILD_NUMBER}</b></p>
+                        <p>Duration: ${currentBuild.durationString}</p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    </body>
+                </html>
                 """,
                 mimeType: 'text/html'
             )
         }
-    
+
         failure {
             emailext(
-                to: "hamdonhamid67@gmail.com",
-                from: "amineallali9@gmail.com",
-                replyTo: "amineallali9@gmail.com",
-                
+                to: "${env.RECIPIENTS}",
                 subject: "❌ FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
-                    <p>⚠️ <b>Build Failed</b></p>
-                    <p>The build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> has failed.</p>
-                    <p>Check the build logs here:</p>
-                    <p><a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                <html>
+                    <body>
+                        <h1>Jenkins Build Notification: Attendance APP</h1>
+                        <h2>Build Failed ❌</h2>
+                        <p>Job: <b>${env.JOB_NAME}</b></p>
+                        <p>Build Number: <b>${env.BUILD_NUMBER}</b></p>
+                        <p>Branch: <b>${env.GIT_BRANCH ?: 'N/A'}</b></p>
+                        <p>Commit: <b>${env.GIT_COMMIT ?: 'N/A'}</b></p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                        <hr>
+                        <p>Check console output for details.</p>
+                    </body>
+                </html>
                 """,
                 mimeType: 'text/html'
             )
-        
+        }
+
+        unstable {
+            emailext(
+                to: "${env.RECIPIENTS}",
+                subject: "⚠️ UNSTABLE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                <html>
+                    <body>
+                        <h1>Jenkins Build Notification: Attendance APP</h1>
+                        <h2>Build Unstable ⚠️</h2>
+                        <p>Tests failed or warnings were found.</p>
+                        <p>Job: <b>${env.JOB_NAME}</b></p>
+                        <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    </body>
+                </html>
+                """,
+                mimeType: 'text/html'
+            )
+        }
+
+        always {
+            echo "Post-build email step executed."
         }
     }
 
